@@ -80,7 +80,7 @@ def tranpose(matrix):
 #m1 * m2 -> m2
 def matrix_mult( m1, m2 ):
     m2_tranposed = tranpose(m2)
-
+    
     for i in xrange(len(m1)):
         for j in xrange(len(m2_tranposed)):
             m2[i][j] = sum([(elem1 * elem2) for elem1, elem2 in zip(m1[i], m2_tranposed[j])])

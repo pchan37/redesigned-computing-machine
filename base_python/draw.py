@@ -12,7 +12,10 @@ def draw_lines( matrix, screen, color ):
         y0 = matrix[1][col_index]
         x1 = matrix[0][col_index + 1]
         y1 = matrix[1][col_index + 1]
-        print x0, y0, x1, y1
+        x0 = int(x0)
+        x1 = int(x1)
+        y0 = int(y0)
+        y1 = int(y1)
         draw_line(x0, y0, x1, y1, screen, color)
                     
 def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
