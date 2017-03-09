@@ -1,7 +1,9 @@
 from __future__ import division
-from functools import wraps
-from math import cos, sin, pi
+from math import cos, sin
 
+from utils import check_for_valid_args, deg_to_radians
+
+@check_for_valid_args
 def make_translate( x, y, z ):
     matrix = new_matrix()
     ident(matrix)
@@ -10,6 +12,7 @@ def make_translate( x, y, z ):
     matrix[2][3] = z
     return matrix
 
+@check_for_valid_args
 def make_scale( x, y, z ):
     matrix = new_matrix()
     ident(matrix)
@@ -18,12 +21,7 @@ def make_scale( x, y, z ):
     matrix[2][2] = z
     return matrix
 
-def deg_to_radians(function):
-    @wraps(function)
-    def convert(degree_measure):
-        return function((pi / 180) * degree_measure)
-    return convert
-
+@check_for_valid_args
 @deg_to_radians
 def make_rotX( theta ):
     matrix = new_matrix()
@@ -34,6 +32,7 @@ def make_rotX( theta ):
     matrix[2][2] = cos(theta)
     return matrix
 
+@check_for_valid_args
 @deg_to_radians
 def make_rotY( theta ):
     matrix = new_matrix()
@@ -44,6 +43,7 @@ def make_rotY( theta ):
     matrix[3][3] = cos(theta)
     return matrix
 
+@check_for_valid_args
 @deg_to_radians
 def make_rotZ( theta ):
     matrix = new_matrix()

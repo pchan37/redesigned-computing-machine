@@ -37,6 +37,14 @@ The file follows the following format:
 
 See the file script for an example of the file format
 """
+
+def valid_num_of_args(index, args, expected_number_of_args):
+    if len(args) != expected_number_of_args:
+        # Add one more to index + 1 because of zero-based index
+        print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting ' + str(expected_number_of_args) + '...'
+        raise SystemExit(1)
+    return True
+        
 def parse_file( fname, points, transform, screen, color ):
     one_liners = {'ident': ident, 'apply': matrix_mult, 'display': display}
     two_liners = {'line': add_edge, 'scale': make_scale, 'move': make_translate, 'rotate': 'make_rot', 'save': save_extension}
@@ -58,11 +66,8 @@ def parse_file( fname, points, transform, screen, color ):
         elif line in two_liners:
             if line == 'line':
                 next_line = file_content[index + 1].strip()
-                args = next_line.split(' ')  
-                if len(args) < 6 or len(args) > 6:
-                    # Add one more to index + 1 because of zero-based index
-                    print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting 6...'
-                else:
+                args = next_line.split(' ')
+                if valid_num_of_args(index, args, 6):
                     try:
                         two_liners[line](points, float(args[0]), float(args[1]), float(args[2]), float(args[3]), float(args[4]), float(args[5]))
                     except ValueError:
@@ -70,11 +75,8 @@ def parse_file( fname, points, transform, screen, color ):
                         print 'Line ' + str(index + 2) + ' contains non-numerical values...'
             elif line == 'scale':
                 next_line = file_content[index + 1].strip()
-                args = next_line.split(' ')  
-                if len(args) < 3 or len(args) > 3:
-                    # Add one more to index + 1 because of zero-based index
-                    print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting 3...'
-                else:
+                args = next_line.split(' ')
+                if valid_num_of_args(index, args, 3):
                     try:
                         scale_matrix = two_liners[line](float(args[0]), float(args[1]), float(args[2]))
                         matrix_mult(scale_matrix, transform)
@@ -83,11 +85,8 @@ def parse_file( fname, points, transform, screen, color ):
                         print 'Line ' + str(index + 2) + ' contains non-numerical values...'
             elif line == 'move':
                 next_line = file_content[index + 1].strip()
-                args = next_line.split(' ')  
-                if len(args) < 3 or len(args) > 3:
-                    # Add one more to index + 1 because of zero-based index
-                    print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting 3...'
-                else:
+                args = next_line.split(' ')
+                if valid_num_of_args(index, args, 3):
                     try:
                         translate_matrix = two_liners[line](float(args[0]), float(args[1]), float(args[2]))
                         matrix_mult(translate_matrix, transform)
@@ -96,11 +95,8 @@ def parse_file( fname, points, transform, screen, color ):
                         print 'Line ' + str(index + 2) + ' contains non-numerical values...'
             elif line == 'rotate':
                 next_line = file_content[index + 1].strip()
-                args = next_line.split(' ')  
-                if len(args) < 2 or len(args) > 2:
-                    # Add one more to index + 1 because of zero-based index
-                    print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting 2...'
-                else:
+                args = next_line.split(' ')
+                if valid_num_of_args(index, args, 2):
                     if args[0] in 'xyzXYZ':
                         function = eval(two_liners[line] + args[0].upper())
                     else:
@@ -114,11 +110,8 @@ def parse_file( fname, points, transform, screen, color ):
                         print 'Line ' + str(index + 2) + ' contains non-numerical values...'
             else:
                 next_line = file_content[index + 1].strip()
-                args = next_line.split(' ')                
-                if len(args) < 1 or len(args) > 1:
-                    # Add one more to index + 1 because of zero-based index
-                    print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting 1...'
-                else:
+                args = next_line.split(' ')
+                if valid_num_of_args(index, args, 1):
                     clear_screen(screen)
                     draw_lines(points, screen, color)
                     display(screen)

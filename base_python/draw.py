@@ -1,6 +1,7 @@
 from display import *
 from matrix import *
 
+from utils import check_for_valid_args
 
 def draw_lines( matrix, screen, color ):
     if len(matrix) < 2:
@@ -17,8 +18,9 @@ def draw_lines( matrix, screen, color ):
         y0 = int(y0)
         y1 = int(y1)
         draw_line(x0, y0, x1, y1, screen, color)
-                    
-def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
+
+@check_for_valid_args
+def add_edge( matrix, x0, y0, z0, x1, y1, z1):
     add_point(matrix, x0, y0, z0)
     add_point(matrix, x1, y1, z1)
     
