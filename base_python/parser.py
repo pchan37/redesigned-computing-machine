@@ -38,10 +38,10 @@ The file follows the following format:
 See the file script for an example of the file format
 """
 
-def valid_num_of_args(index, args, expected_number_of_args):
+def valid_num_of_args(line_num, args, expected_number_of_args):
     if len(args) != expected_number_of_args:
         # Add one more to index + 1 because of zero-based index
-        print 'Line ' + str(index + 2) + ' has ' + str(len(args)) + ' arguments, expecting ' + str(expected_number_of_args) + '...'
+        print 'Line ' + str(line_num + 2) + ' has ' + str(len(args)) + ' arguments, expecting ' + str(expected_number_of_args) + '...'
         raise SystemExit(1)
     return True
         
@@ -50,9 +50,9 @@ def parse_file( fname, points, transform, screen, color ):
     two_liners = {'line': add_edge, 'scale': make_scale, 'move': make_translate, 'rotate': 'make_rot', 'save': save_extension}
     with open(fname) as file_:
         file_content = file_.readlines()
-    for index, line in enumerate(file_content):
+    for line_num, line in enumerate(file_content):
         line = line.strip()
-        if line[0].isdigit() or file_content[index - 1].strip() == 'rotate' or file_content[index - 1].strip() == 'save':
+        if line[0].isdigit() or file_content[line_num - 1].strip() == 'rotate' or file_content[line_num - 1].strip() == 'save':
             continue
         if line in one_liners:
             if line == 'ident':
@@ -65,57 +65,45 @@ def parse_file( fname, points, transform, screen, color ):
                 one_liners[line](screen)
         elif line in two_liners:
             if line == 'line':
-                next_line = file_content[index + 1].strip()
+                next_line = file_content[line_num + 1].strip()
                 args = next_line.split(' ')
-                if valid_num_of_args(index, args, 6):
-                    try:
-                        two_liners[line](points, float(args[0]), float(args[1]), float(args[2]), float(args[3]), float(args[4]), float(args[5]))
-                    except ValueError:
-                        # Add one more to index + 1 because of zero-based index
-                        print 'Line ' + str(index + 2) + ' contains non-numerical values...'
+                if valid_num_of_args(line_num, args, 6):
+                    two_liners[line](points, args[0], args[1], args[2], args[3], args[4], args[5], line_num=line_num)
             elif line == 'scale':
-                next_line = file_content[index + 1].strip()
+                next_line = file_content[line_num + 1].strip()
                 args = next_line.split(' ')
-                if valid_num_of_args(index, args, 3):
-                    try:
-                        scale_matrix = two_liners[line](float(args[0]), float(args[1]), float(args[2]))
-                        matrix_mult(scale_matrix, transform)
-                    except ValueError:
-                        # Add one more to index + 1 because of zero-based index
-                        print 'Line ' + str(index + 2) + ' contains non-numerical values...'
+                if valid_num_of_args(line_num, args, 3):
+                    scale_matrix = two_liners[line](args[0], args[1], args[2], line_num=line_num)
+                    matrix_mult(scale_matrix, transform)
             elif line == 'move':
-                next_line = file_content[index + 1].strip()
+                next_line = file_content[line_num + 1].strip()
                 args = next_line.split(' ')
-                if valid_num_of_args(index, args, 3):
-                    try:
-                        translate_matrix = two_liners[line](float(args[0]), float(args[1]), float(args[2]))
-                        matrix_mult(translate_matrix, transform)
-                    except ValueError:
-                        # Add one more to index + 1 because of zero-based index
-                        print 'Line ' + str(index + 2) + ' contains non-numerical values...'
+                if valid_num_of_args(line_num, args, 3):
+                    translate_matrix = two_liners[line](args[0], args[1], args[2], line_num=line_num)
+                    matrix_mult(translate_matrix, transform)
             elif line == 'rotate':
-                next_line = file_content[index + 1].strip()
+                next_line = file_content[line_num + 1].strip()
                 args = next_line.split(' ')
-                if valid_num_of_args(index, args, 2):
+                if valid_num_of_args(line_num, args, 2):
                     if args[0] in 'xyzXYZ':
                         function = eval(two_liners[line] + args[0].upper())
                     else:
-                        print 'Line ' + str(index + 2) + ' provided an invalid axis...'
+                        print 'Line ' + str(line_num + 2) + ' provided an invalid axis...'
                         raise SystemExit(1)                    
-                    try:
-                        rotate_matrix = function(float(args[1]))
-                        matrix_mult(rotate_matrix, transform)
-                    except ValueError:
-                        # Add one more to index + 1 because of zero-based index
-                        print 'Line ' + str(index + 2) + ' contains non-numerical values...'
-            else:
-                next_line = file_content[index + 1].strip()
+                    rotate_matrix = function(args[1], line_num=line_num)
+                    matrix_mult(rotate_matrix, transform)
+            elif line == 'save':
+                next_line = file_content[line_num + 1].strip()
                 args = next_line.split(' ')
-                if valid_num_of_args(index, args, 1):
+                if valid_num_of_args(line_num, args, 1):
                     clear_screen(screen)
                     draw_lines(points, screen, color)
                     display(screen)
-                    two_liners[line](screen, args[0])
+                    if args[0].endswith('.png'):
+                        two_liners[line](screen, args[0])
+                    else:
+                        print 'Invalid filename at line ' + str(line_num + 2)
+                        raise SystemExit(1)
         else:
-            print 'Invalid command found at line ' + str(index)
+            print 'Invalid command found at line ' + str(line_num)
             raise SystemExit(1)

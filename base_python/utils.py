@@ -5,10 +5,17 @@ def check_for_valid_args(function):
     @wraps(function)
     def inner(*args, **kwargs):
         try:
-            args = [args[0]] + [float(arg) for arg in args[1:]]
+            startIndex = 1 if type(args[0]) == list else 0
+            args = ([args[0]] if startIndex else []) + [float(arg) for arg in args[startIndex:]]
             return function(*args)
         except ValueError:
-            print 'Line ' + str(index + 2)  +' contains non-numerical values...'
+            line_num = kwargs.get('line_num')
+            if line_num != None:
+                print 'Line ' + str(line_num + 2)  +' contains non-numerical values...'
+            else:
+                print 'Non-numerical values found in arguments, pass line_num for more information'
+                print 'Ex: function(arg1, arg2, arg3, ..., line_num=<current_line>)'
+                print 'Note: current_line begins at 0 (the start of the script)'
             raise SystemExit(1)
     return inner
                 

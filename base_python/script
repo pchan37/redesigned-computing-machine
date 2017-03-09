@@ -1,51 +1,46 @@
 line
 0 0 0 100 0 0
 line
-100 0 0 100 100 0
+100 0 0 0 200 0
 line
-100 100 0 0 100 0
+0 200 0 0 0 0
 line
-0 100 0 0 0 0
+0 0 150 100 0 150
 line
-0 0 100 100 0 100
+100 0 150 0 200 150
 line
-100 0 100 100 100 100
+0 200 150 0 0 150
 line
-100 100 100 0 100 100
+0 0 0 0 0 150
 line
-0 100 100 0 0 100
+100 0 0 100 0 150
 line
-0 0 0 0 0 100
+0 200 0 0 200 150
 line
-0 100 0 0 100 100
+90 20 40 90 180 40
 line
-100 100 0 100 100 100
+90 180 40 10 180 40
 line
-100 0 0 100 0 100
-display
-ident
-scale
-2 2 2
-apply
-display
+10 180 40 90 20 40
+line
+90 20 110 90 180 110
+line
+90 180 110 10 180 110
+line
+10 180 110 90 20 110
+line
+90 20 40 90 20 110
+line
+90 180 40 90 180 110
+line
+10 180 40 10 180 110
 ident
 move
-100 100 0
-apply
-display
-ident
-rotate
-z 20
-rotate
-x 20
+200 0 0
 rotate
 y 20
-apply
-display
-ident
 rotate
-y 20
+x -25
 apply
-display
 save
-pic.png
+pic2.png
